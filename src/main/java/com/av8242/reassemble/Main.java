@@ -1,18 +1,10 @@
 package com.av8242.reassemble;
 
-import com.av8242.reassemble.Exceptions.FileFormatException;
-import com.sun.deploy.util.StringUtils;
-import org.omg.CORBA.DynAnyPackage.Invalid;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.io.IOException;
-import java.io.InvalidClassException;
-import java.nio.Buffer;
 import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 class InvalidInputException extends Throwable {
     public InvalidInputException(String message) {
@@ -204,14 +196,12 @@ public class Main {
                 return lines.get(0);
             }
 
-
-
-            //first = lines.remove(0);
             int i = 0;
 
             while (lines.size() > 1) {
                 first = lines.get(0);
                 maxOverlap = 0;
+                matchedIndex = -1;
 
                 for (int z = 1 ; z < lines.size(); z++) {
 
@@ -226,6 +216,7 @@ public class Main {
 
                         index = first.indexOf(second.charAt(sec_index));
 
+
                         if (index == 0) {
                             // Matched at the beginning
                             //LOGGER.info("Matched at the beginning" + first + ".." + second);
@@ -238,6 +229,21 @@ public class Main {
                                     matchedIndex = z;
                                     text = second.substring(0, sec_index) + first;
                                     break;
+                                } else {
+                                    // double check needed
+                                    int new_index = first.lastIndexOf(second.charAt(sec_index));
+                                    if (new_index > 0) {
+                                        toMatch = first.substring(new_index);
+                                        if (second.regionMatches(0, toMatch, 0, toMatch.length())) {
+                                            text = lines.get(i);
+                                            maxOverlap = toMatch.length();
+                                            matchedIndex = z;
+                                            text = first.substring(0, new_index) + second;
+                                            break;
+                                        }
+
+                                    }
+
                                 }
                             }
                         } else if (index == first.length() - 1 && sec_index == 0) {
@@ -263,6 +269,20 @@ public class Main {
                                     matchedIndex = z;
                                     text = first.substring(0, index) + second;
                                     break;
+                                } else {
+                                    // Something wrong.. should be another match or possibly no match
+                                    int new_index = first.lastIndexOf(second.charAt(sec_index));
+                                    if (new_index > 0) {
+                                        toMatch = first.substring(new_index);
+
+                                        if (second.regionMatches(sec_index, toMatch, 0, toMatch.length())) {
+                                            text = lines.get(i);
+                                            maxOverlap = toMatch.length();
+                                            matchedIndex = z;
+                                            text = first.substring(0, new_index) + second;
+                                            break;
+                                        }
+                                    }
                                 }
                             }
                         } else {
@@ -270,6 +290,10 @@ public class Main {
                             //LOGGER.severe("Condition not handled for " + first + " and " + second + " for sec_index " + sec_index);
                         }
                     }
+                }
+
+                if (matchedIndex < 0) {
+                    throw new InvalidInputException("Error parsing lines.");
                 }
 
                 System.out.println("Matched at index :: " + matchedIndex);
@@ -297,6 +321,7 @@ public class Main {
                     .collect(Collectors.toList());
             return collect.get(0);
         } catch (Exception e) {
+            e.printStackTrace();
             LOGGER.severe(e.getMessage());
             return null;
         }

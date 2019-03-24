@@ -20,6 +20,12 @@ public class MainTest {
     }
 
     @Test
+    public void test_input() {
+        this.main = new Main();
+        this.main.fixLines(new String[]{"src/main/resources/input.txt"});
+    }
+
+    @Test
     public void when_same_word() {
         this.main = new Main();
         assertEquals("abc", this.main.fixLines(new String[]{"src/main/resources/same.txt"}));
@@ -28,7 +34,7 @@ public class MainTest {
     @Test
     public void when_contains_word() {
         this.main = new Main();
-        assertEquals("frodo", this.main.fixLines(new String[]{"src/main/resources/contains.txt"}));
+        assertEquals("frodometer", this.main.fixLines(new String[]{"src/main/resources/contains.txt"}));
     }
 
     @Test
@@ -50,6 +56,42 @@ public class MainTest {
     }
 
     @Test
+    public void test_repeat1() {
+        this.main = new Main();
+        assertEquals("repeat, now repeat!", this.main.fixLines(new String[]{"src/main/resources/repeat1.txt"}));
+    }
+
+    @Test
+    public void test_repeat2() {
+        this.main = new Main();
+        assertEquals("repeat, now let's repeat now!", this.main.fixLines(new String[]{"src/main/resources/repeat2.txt"}));
+    }
+
+    @Test
+    public void test_clown() {
+        this.main = new Main();
+        assertEquals("He owns a clown", this.main.fixLines(new String[]{"src/main/resources/clown.txt"}));
+    }
+
+    @Test
+    public void test_star() {
+        this.main = new Main();
+        assertEquals("target star cluster", this.main.fixLines(new String[]{"src/main/resources/star.txt"}));
+    }
+
+    @Test
+    public void test_mnop() {
+        this.main = new Main();
+        assertEquals("mnoxabcdefghijklmnop", this.main.fixLines(new String[]{"src/main/resources/mnop.txt"}));
+    }
+
+    @Test
+    public void test_latin2() {
+        this.main = new Main();
+        assertEquals("repeat, now repeat!", this.main.fixLines(new String[]{"src/main/resources/latin2.txt"}));
+    }
+
+    @Test
     public void testSubstring() {
 
     }
@@ -63,9 +105,17 @@ public class MainTest {
 
     @Test
     public void testRegionMatches() {
-        String one = "odometer";
-        String two = "f";
-        System.out.println(one.regionMatches(0, two, 0, 3));
+        String one = "that end";
+        String two = "t ends";
+        System.out.println(one.regionMatches(3, two, 0, 3));
+    }
+
+    @Test
+    public void testSecondMatch() {
+        String one = "ttat end";
+        String two = "t ends";
+        System.out.println(one.indexOf(two.substring(0, 2), 1));
+        System.out.println(one.substring(3));
     }
 
 
