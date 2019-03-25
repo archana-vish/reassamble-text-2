@@ -1,4 +1,4 @@
-package com.av8242.reassemble;
+package com.av8242.reassemble.fragment.submissions;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
