@@ -15,7 +15,6 @@ class InvalidInputException extends Throwable {
     }
 }
 
-
 public class ArchanaVisveswaran {
 
     private static final Logger LOGGER = Logger.getLogger(ArchanaVisveswaran.class.getName());
@@ -31,11 +30,11 @@ public class ArchanaVisveswaran {
 
         try {
             if (line.split(";").length == 0) {
-                throw new InvalidInputException("Incorrect format. Excepted delimiter missing in file");
+                throw new InvalidInputException("Incorrect format. Excepted delimiter missing in file. Check line:" + line);
             }
 
             if (line.split(";").length == 1) {
-                LOGGER.info("Only one word in the fragment");
+                LOGGER.info("Only one word in the fragment. Check line:" + line);
                 return line;
             }
 
@@ -168,10 +167,12 @@ public class ArchanaVisveswaran {
         return text;
     }
 
+
     public static String fixLines(String[] args) {
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(args[0]))) {
             List<String> lines = bufferedReader.lines()
                     .map(ArchanaVisveswaran::reassemble)
+                    .peek(System.out::println)
                     .collect(Collectors.toList());
 
             if (lines.isEmpty()) {
@@ -186,6 +187,12 @@ public class ArchanaVisveswaran {
 
 
     public static void main(String[] args) {
-        ArchanaVisveswaran.fixLines(args);
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(args[0]))) {
+            bufferedReader.lines()
+                    .map(ArchanaVisveswaran::reassemble)
+                    .forEach(System.out::println);
+        } catch (Exception e) {
+            LOGGER.severe(e.getMessage());
+        }
     }
 }
