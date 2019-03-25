@@ -6,11 +6,11 @@ import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-class InvalidInputException extends Throwable {
-    public InvalidInputException(String message) {
-        super(message);
-    }
-}
+//class InvalidInputException extends Throwable {
+//    public InvalidInputException(String message) {
+//        super(message);
+//    }
+//}
 
 
 public class Main {
