@@ -164,6 +164,7 @@ public class Main {
 
             Comparator<String> compareByLength = Comparator.comparingInt(String::length);
             List<String> wordsAsList = Arrays.stream(line.split(";"))
+                    .map(String::trim)
                     .sorted(compareByLength.reversed())
                     .distinct()
                     .collect(Collectors.toList());
@@ -179,35 +180,22 @@ public class Main {
             int index = 0, maxOverlap = 0, matchedIndex = 0;
             String first, second, toMatch;
 
-            // Remove all phrases that are contained
-            List<String> dups = new ArrayList<>();
-            for (int i = 0; i < lines.size() - 1; i++) {
-                for (int j = i + 1; j < lines.size(); j++) {
-                    if (lines.get(i).contains(lines.get(j))) {
-
-                        LOGGER.info("Adding line " + lines.get(j));
-                        dups.add(lines.get(j));
-                    }
-                }
-            }
-
-            lines.removeAll(dups);
-            if (lines.size() == 1) {
-                return lines.get(0);
-            }
-
-            int i = 0;
-
-            while (lines.size() > 1) {
+            while(lines.size() > 1) {
                 first = lines.get(0);
                 maxOverlap = 0;
                 matchedIndex = -1;
 
                 for (int z = 1 ; z < lines.size(); z++) {
 
-                    second = lines.get(z);
+                    second = lines.get(z).trim();
 
-                    System.out.println("Comparing now " + first +  " --- " + second);
+                    System.out.println("Comparing  [" + first +  "] --- [" + second + "]");
+
+                    // Remove contained lines
+                    if (first.contains(second)) {
+                        lines.remove(z);
+                        continue;
+                    }
 
                     for (int sec_index = 0; sec_index < second.length(); sec_index++) {
 
@@ -216,7 +204,6 @@ public class Main {
 
                         index = first.indexOf(second.charAt(sec_index));
 
-
                         if (index == 0) {
                             // Matched at the beginning
                             //LOGGER.info("Matched at the beginning" + first + ".." + second);
@@ -224,7 +211,7 @@ public class Main {
                             if (toMatch.length() > maxOverlap) {
 
                                 if (first.regionMatches(0, toMatch, 0, toMatch.length())) {
-                                    text = lines.get(i);
+                                    text = lines.get(0);
                                     maxOverlap = toMatch.length();
                                     matchedIndex = z;
                                     text = second.substring(0, sec_index) + first;
@@ -235,7 +222,7 @@ public class Main {
                                     if (new_index > 0) {
                                         toMatch = first.substring(new_index);
                                         if (second.regionMatches(0, toMatch, 0, toMatch.length())) {
-                                            text = lines.get(i);
+                                            text = lines.get(0);
                                             maxOverlap = toMatch.length();
                                             matchedIndex = z;
                                             text = first.substring(0, new_index) + second;
@@ -264,7 +251,7 @@ public class Main {
 
 
                                 if (second.regionMatches(sec_index, toMatch, 0, toMatch.length())) {
-                                    text = lines.get(i);
+                                    text = lines.get(0);
                                     maxOverlap = toMatch.length();
                                     matchedIndex = z;
                                     text = first.substring(0, index) + second;
@@ -276,7 +263,7 @@ public class Main {
                                         toMatch = first.substring(new_index);
 
                                         if (second.regionMatches(sec_index, toMatch, 0, toMatch.length())) {
-                                            text = lines.get(i);
+                                            text = lines.get(0);
                                             maxOverlap = toMatch.length();
                                             matchedIndex = z;
                                             text = first.substring(0, new_index) + second;
@@ -294,13 +281,16 @@ public class Main {
 
                 if (matchedIndex < 0) {
                     throw new InvalidInputException("Error parsing lines.");
+                } else {
+                    System.out.println("Matched at index :: " + matchedIndex + " maxoverlap ::" + maxOverlap);
+                    lines.set(0, text);
+                    lines.remove(matchedIndex);
+                    System.out.println("Final String :: " + text);
+                    System.out.println("Lines to be iterated :: " + lines);
+
                 }
 
-                System.out.println("Matched at index :: " + matchedIndex);
-                lines.set(0, text);
-                lines.remove(matchedIndex);
-                System.out.println("Final String :: " + text);
-                System.out.println("Lines to be iterated now :: " + lines);
+
             }
 
 
@@ -312,6 +302,7 @@ public class Main {
         }
         return text;
     }
+
 
 
     public String fixLines(String[] args) {

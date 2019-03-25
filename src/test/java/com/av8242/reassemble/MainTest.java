@@ -91,26 +91,26 @@ public class MainTest {
         assertEquals("repeat, now repeat!", this.main.fixLines(new String[]{"src/main/resources/latin2.txt"}));
     }
 
-    @Test
+
     public void testSubstring() {
 
     }
 
-    @Test
+
     public void testIndexOf() {
         String one = "odometer";
         String two = "Frodo";
         System.out.println(one.indexOf('o'));
     }
 
-    @Test
+
     public void testRegionMatches() {
         String one = "that end";
         String two = "t ends";
         System.out.println(one.regionMatches(3, two, 0, 3));
     }
 
-    @Test
+
     public void testSecondMatch() {
         String one = "ttat end";
         String two = "t ends";
