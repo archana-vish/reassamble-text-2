@@ -2,15 +2,15 @@ package com.av8242.reassemble;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class MainTest {
 
-    ArchanaVisveswaran main ;
+    Main main ;
 
 
     public void getFileNames() {
-        this.main = new ArchanaVisveswaran();
+        this.main = new Main();
         this.main.fixLines(new String[]{"src/test/resources/alliswell.txt"});
         this.main.fixLines(new String[]{"src/test/resources/contains.txt"});
         this.main.fixLines(new String[]{"src/test/resources/same.txt"});
@@ -26,73 +26,61 @@ public class MainTest {
 
     @Test
     public void test_input() {
-        this.main = new ArchanaVisveswaran();
         this.main.fixLines(new String[]{"src/test/resources/input.txt"});
     }
 
     @Test
     public void when_same_word() {
-        this.main = new ArchanaVisveswaran();
         assertEquals("abc", this.main.fixLines(new String[]{"src/test/resources/same.txt"}));
     }
 
     @Test
     public void when_contains_word() {
-        this.main = new ArchanaVisveswaran();
         assertEquals("frodometer", this.main.fixLines(new String[]{"src/test/resources/contains.txt"}));
     }
 
     @Test
     public void when_simple_line() {
-        this.main = new ArchanaVisveswaran();
         assertEquals("abcdyz", this.main.fixLines(new String[]{"src/test/resources/simple.txt"}));
     }
 
     @Test
     public void when_latin_line1() {
-        this.main = new ArchanaVisveswaran();
         assertEquals("O draconian devil! Oh lame saint!", this.main.fixLines(new String[]{"src/test/resources/latin1.txt"}));
     }
 
     @Test
     public void when_all_is_well() {
-        this.main = new ArchanaVisveswaran();
         assertEquals("all is well that ends well", this.main.fixLines(new String[]{"src/test/resources/alliswell.txt"}));
     }
 
     @Test
     public void test_repeat1() {
-        this.main = new ArchanaVisveswaran();
         assertEquals("repeat, now repeat!", this.main.fixLines(new String[]{"src/test/resources/repeat1.txt"}));
     }
 
     @Test
     public void test_repeat2() {
-        this.main = new ArchanaVisveswaran();
         assertEquals("repeat, now let's repeat now!", this.main.fixLines(new String[]{"src/test/resources/repeat2.txt"}));
     }
 
     @Test
     public void test_clown() {
-        this.main = new ArchanaVisveswaran();
         assertEquals("He owns a clown", this.main.fixLines(new String[]{"src/test/resources/clown.txt"}));
     }
 
     @Test
     public void test_star() {
-        this.main = new ArchanaVisveswaran();
         assertEquals("target star cluster", this.main.fixLines(new String[]{"src/test/resources/star.txt"}));
     }
 
     @Test
     public void test_mnop() {
-        this.main = new ArchanaVisveswaran();
         assertEquals("mnoxabcdefghijklmnop", this.main.fixLines(new String[]{"src/test/resources/mnop.txt"}));
     }
 
     @Test
     public void test_latin2() {
-        this.main = new ArchanaVisveswaran();
         assertEquals(
                 "Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, " +
                         "sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.",
@@ -128,7 +116,7 @@ public class MainTest {
 
 
     public void findMax() {
-        this.main = new ArchanaVisveswaran();
+        this.main = new Main();
 //        main.findMaxOverlap("all is well", "ell that en");
 //        main.findMaxOverlap("abc", "abc");
 //        main.findMaxOverlap("frodo", "odometer");

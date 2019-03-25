@@ -144,179 +144,21 @@ public class Main {
         return text;
     }
 
-    private static String reassemble3(String line) {
-        String text = line;
 
-        try {
 
-            if (line.isEmpty()) {
+
+    public static String fixLines(String[] args) {
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(args[0]))) {
+            List<String> lines = bufferedReader.lines()
+                    .map(ArchanaVisveswaran::reassemble)
+                    .peek(System.out::println)
+                    .collect(Collectors.toList());
+
+            if (lines.isEmpty()) {
                 throw new InvalidInputException("Empty input line. Please check input");
             }
-
-            if (line.split(";").length == 0) {
-                throw new InvalidInputException("Incorrect format. Excepted delimiter missing in file");
-            }
-
-            if (line.split(";").length == 1) {
-                LOGGER.info("Only one word in the fragment");
-                return line;
-            }
-
-            Comparator<String> compareByLength = Comparator.comparingInt(String::length);
-            List<String> wordsAsList = Arrays.stream(line.split(";"))
-                    .map(String::trim)
-                    .sorted(compareByLength.reversed())
-                    .distinct()
-                    .collect(Collectors.toList());
-            LOGGER.info("Initial sorted list " + wordsAsList);
-
-
-            if (wordsAsList.size() == 1) {
-                return wordsAsList.get(0);
-            }
-
-            List<String> lines = wordsAsList;
-
-            int index = 0, maxOverlap = 0, matchedIndex = 0;
-            String first, second, toMatch;
-
-            while(lines.size() > 1) {
-                first = lines.get(0);
-                maxOverlap = 0;
-                matchedIndex = -1;
-
-                for (int z = 1 ; z < lines.size(); z++) {
-
-                    second = lines.get(z).trim();
-
-                    System.out.println("Comparing  [" + first +  "] --- [" + second + "]");
-
-                    // Remove contained lines
-                    if (first.contains(second)) {
-                        lines.remove(z);
-                        continue;
-                    }
-
-                    for (int sec_index = 0; sec_index < second.length(); sec_index++) {
-
-                        if (second.charAt(sec_index) == ' ')
-                            continue;
-
-                        index = first.indexOf(second.charAt(sec_index));
-
-                        if (index == 0) {
-                            // Matched at the beginning
-                            //LOGGER.info("Matched at the beginning" + first + ".." + second);
-                            toMatch = second.substring(sec_index);
-                            if (toMatch.length() > maxOverlap) {
-
-                                if (first.regionMatches(0, toMatch, 0, toMatch.length())) {
-                                    text = lines.get(0);
-                                    maxOverlap = toMatch.length();
-                                    matchedIndex = z;
-                                    text = second.substring(0, sec_index) + first;
-                                    break;
-                                } else {
-                                    // double check needed
-                                    int new_index = first.lastIndexOf(second.charAt(sec_index));
-                                    if (new_index > 0) {
-                                        toMatch = first.substring(new_index);
-                                        if (second.regionMatches(0, toMatch, 0, toMatch.length())) {
-                                            text = lines.get(0);
-                                            maxOverlap = toMatch.length();
-                                            matchedIndex = z;
-                                            text = first.substring(0, new_index) + second;
-                                            break;
-                                        }
-
-                                    }
-
-                                }
-                            }
-                        } else if (index == first.length() - 1 && sec_index == 0) {
-                            // Matched at the end
-                            //LOGGER.info("Matched at the end " + first + ".." + second);
-                            toMatch = second;
-                            if (toMatch.length() > maxOverlap) {
-                                maxOverlap = toMatch.length();
-                                matchedIndex = z;
-                                text = first.concat(second.substring(1));
-                                break;
-                            }
-                        } else if (index > 0 && sec_index == 0) {
-                            // Matched at suffix
-                            //LOGGER.info("Matched somewhere in the middle"  + first + ".." + second);
-                            toMatch = first.substring(index);
-                            if (second.length() > maxOverlap) {
-
-
-                                if (second.regionMatches(sec_index, toMatch, 0, toMatch.length())) {
-                                    text = lines.get(0);
-                                    maxOverlap = toMatch.length();
-                                    matchedIndex = z;
-                                    text = first.substring(0, index) + second;
-                                    break;
-                                } else {
-                                    // Something wrong.. should be another match or possibly no match
-                                    int new_index = first.lastIndexOf(second.charAt(sec_index));
-                                    if (new_index > 0) {
-                                        toMatch = first.substring(new_index);
-
-                                        if (second.regionMatches(sec_index, toMatch, 0, toMatch.length())) {
-                                            text = lines.get(0);
-                                            maxOverlap = toMatch.length();
-                                            matchedIndex = z;
-                                            text = first.substring(0, new_index) + second;
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-                        } else {
-                            //TODO
-                            //LOGGER.severe("Condition not handled for " + first + " and " + second + " for sec_index " + sec_index);
-                        }
-                    }
-                }
-
-                if (lines.size() == 1) {
-                    text = lines.get(0);
-                    break;
-                }
-
-                if (matchedIndex < 0) {
-                    String temp = first;
-                    lines.set(0, lines.get(1));
-                    lines.set(1, temp);
-                } else {
-                    System.out.println("Matched at index :: " + matchedIndex + " maxoverlap ::" + maxOverlap);
-                    lines.set(0, text);
-                    lines.remove(matchedIndex);
-                    System.out.println("Final String :: " + text);
-                    System.out.println("Lines to be iterated :: " + lines);
-                }
-            }
-
-
-            System.out.println("Lines..." + lines);
-
-
-        } catch (InvalidInputException exception) {
-            LOGGER.severe("Empty input line. Please check input");
-        }
-        return text;
-    }
-
-
-
-    public String fixLines(String[] args) {
-        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(args[0]))) {
-            List<String> collect = bufferedReader.lines()
-                    .map(Main::reassemble3)
-                    .collect(Collectors.toList());
-            return collect.get(0);
-        } catch (Exception e) {
-            e.printStackTrace();
+            return lines.get(0);
+        } catch (InvalidInputException|Exception e) {
             LOGGER.severe(e.getMessage());
             return null;
         }

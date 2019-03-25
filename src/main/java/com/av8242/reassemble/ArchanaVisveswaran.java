@@ -168,24 +168,6 @@ public class ArchanaVisveswaran {
     }
 
 
-    public static String fixLines(String[] args) {
-        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(args[0]))) {
-            List<String> lines = bufferedReader.lines()
-                    .map(ArchanaVisveswaran::reassemble)
-                    .peek(System.out::println)
-                    .collect(Collectors.toList());
-
-            if (lines.isEmpty()) {
-                throw new InvalidInputException("Empty input line. Please check input");
-            }
-            return lines.get(0);
-        } catch (InvalidInputException|Exception e) {
-            LOGGER.severe(e.getMessage());
-            return null;
-        }
-    }
-
-
     public static void main(String[] args) {
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(args[0]))) {
             bufferedReader.lines()
