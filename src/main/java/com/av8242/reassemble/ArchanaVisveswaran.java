@@ -52,7 +52,7 @@ public class ArchanaVisveswaran {
             }
 
 
-            int index = 0, maxOverlap = 0, matchedIndex = 0;
+            int index, maxOverlap, matchedIndex;
             String first, second, toMatch;
 
             while(lines.size() > 1) {
