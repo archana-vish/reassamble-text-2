@@ -279,18 +279,22 @@ public class Main {
                     }
                 }
 
+                if (lines.size() == 1) {
+                    text = lines.get(0);
+                    break;
+                }
+
                 if (matchedIndex < 0) {
-                    throw new InvalidInputException("Error parsing lines.");
+                    String temp = first;
+                    lines.set(0, lines.get(1));
+                    lines.set(1, temp);
                 } else {
                     System.out.println("Matched at index :: " + matchedIndex + " maxoverlap ::" + maxOverlap);
                     lines.set(0, text);
                     lines.remove(matchedIndex);
                     System.out.println("Final String :: " + text);
                     System.out.println("Lines to be iterated :: " + lines);
-
                 }
-
-
             }
 
 

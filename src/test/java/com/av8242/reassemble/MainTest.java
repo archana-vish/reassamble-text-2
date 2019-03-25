@@ -88,7 +88,10 @@ public class MainTest {
     @Test
     public void test_latin2() {
         this.main = new Main();
-        assertEquals("repeat, now repeat!", this.main.fixLines(new String[]{"src/main/resources/latin2.txt"}));
+        assertEquals(
+                "Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, " +
+                        "sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.",
+                this.main.fixLines(new String[]{"src/main/resources/latin2.txt"}));
     }
 
 
